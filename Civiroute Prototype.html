@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CiviRoute — AI Urban Intelligence</title>
+<style>
+:root{
+  --navy:#06152f; --navy2:#0a2145; --blue:#1677ff; --cyan:#22d3ee;
+  --white:#f7fbff; --muted:#a9bad3; --card:rgba(14,37,72,.78);
+  --line:rgba(145,190,255,.16); --shadow:0 24px 70px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--navy);color:var(--white);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font:inherit}
+nav{
+ position:fixed;top:0;left:0;right:0;z-index:1000;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:16px 6%;background:rgba(4,17,38,.78);backdrop-filter:blur(18px);
+ border-bottom:1px solid var(--line)
+}
+.logo{display:flex;align-items:center;gap:11px;font-size:23px;font-weight:800;letter-spacing:.3px}
+.logoMark{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+ background:linear-gradient(135deg,var(--blue),var(--cyan));box-shadow:0 8px 25px #1677ff55}
+.logoMark svg{width:25px}
+.navlinks{display:flex;gap:28px;color:#c8d7ea;font-size:14px}
+.navlinks a:hover{color:white}
+.navBtn{padding:10px 18px;border:1px solid #348aff88;border-radius:10px;background:#1268df;color:white;font-weight:700;cursor:pointer}
+.hero{
+ min-height:780px;padding:140px 6% 80px;display:grid;grid-template-columns:1.05fr .95fr;
+ gap:45px;align-items:center;position:relative;overflow:hidden;
+ background:
+ radial-gradient(circle at 78% 35%,#087dff20,transparent 32%),
+ linear-gradient(180deg,#06152f 0%,#071b3a 100%);
+}
+.hero:after{content:"";position:absolute;width:500px;height:500px;border-radius:50%;right:-180px;bottom:-240px;background:#22d3ee0b;filter:blur(10px)}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:99px;
+ border:1px solid #2e8cff55;background:#0b2a55;color:#a8ddff;font-size:12px;font-weight:700;margin-bottom:20px}
+.dot{width:7px;height:7px;border-radius:50%;background:#36e39a;box-shadow:0 0 13px #36e39a}
+h1{font-size:clamp(43px,6vw,75px);line-height:1.02;letter-spacing:-2.5px;max-width:720px}
+.gradient{background:linear-gradient(90deg,#fff,#6bdcff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:17px;max-width:650px;margin:24px 0 30px}
+.actions{display:flex;gap:13px;flex-wrap:wrap}
+.primary,.secondary{padding:14px 21px;border-radius:11px;font-weight:800;cursor:pointer}
+.primary{border:0;background:linear-gradient(135deg,#1475ff,#20bdf1);color:white;box-shadow:0 12px 30px #0879ff38}
+.secondary{border:1px solid #7292ba55;background:#ffffff08;color:#dbe9f8}
+.heroVisual{position:relative;min-height:450px;border:1px solid #73a9ff26;border-radius:26px;overflow:hidden;box-shadow:var(--shadow);background:#081a38}
+.heroImage{
+ position:absolute;inset:0;background-image:
+ linear-gradient(90deg,rgba(5,20,44,.75),rgba(5,20,44,.06)),
+ url("https://images.unsplash.com/photo-1494522358652-f30e61a60313?auto=format&fit=crop&w=1600&q=90");
+ background-size:cover;background-position:center;
+ filter:saturate(1.08);
+}
+.scan{position:absolute;left:9%;right:9%;top:19%;height:2px;background:#43d7ff;box-shadow:0 0 18px #43d7ff;animation:scan 3.5s infinite}
+@keyframes scan{0%,100%{top:19%}50%{top:76%}}
+.aiCard{position:absolute;left:22px;bottom:22px;padding:15px 17px;border:1px solid #8bc7ff38;border-radius:15px;background:#071a36d9;backdrop-filter:blur(13px);min-width:235px}
+.aiCard b{font-size:13px}.aiRow{display:flex;justify-content:space-between;color:#a9c1dc;font-size:11px;margin-top:8px}
+.miniMap{position:absolute;right:20px;top:20px;width:145px;padding:12px;border-radius:14px;background:#071a36d9;border:1px solid #8bc7ff2b;font-size:11px;color:#bcd0e8}
+.route{height:70px;margin-top:7px;position:relative;border-left:1px dashed #4ccfff55;border-bottom:1px dashed #4ccfff55}
+.route:after{content:"";position:absolute;left:20px;top:35px;width:90px;height:2px;background:#2bd9ff;transform:rotate(-23deg);box-shadow:0 0 9px #2bd9ff}
+.section{padding:92px 6%;background:#071a38}
+.section.alt{background:#06152f}
+.sectionHead{max-width:720px;margin-bottom:42px}
+.eyebrow{color:#42c9ff;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800}
+h2{font-size:clamp(30px,4vw,48px);line-height:1.1;margin:10px 0 13px}
+.sectionHead p{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{padding:25px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(145deg,#0d2a51c7,#081b39b8);box-shadow:0 15px 40px #00000018}
+.icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#1677ff18;color:#4dcfff;margin-bottom:17px}
+.card h3{font-size:18px;margin-bottom:7px}.card p{color:#9fb3ce;font-size:14px}
+.workflow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch}
+.step{position:relative;padding:22px 15px;border:1px solid var(--line);border-radius:15px;background:#0a2245;text-align:center}
+.step span{display:grid;place-items:center;width:34px;height:34px;margin:0 auto 12px;border-radius:50%;background:#1677ff;color:#fff;font-weight:800}
+.step h4{font-size:14px}.step p{font-size:11px;color:#9eb2cd;margin-top:5px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{padding:22px;border:1px solid var(--line);border-radius:16px;background:#091e3e}
+.stat strong{font-size:28px}.stat p{font-size:12px;color:#91a8c4}
+footer{padding:30px 6%;border-top:1px solid var(--line);background:#041128;color:#8095b0;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12px}
+
+/* Modal / registration */
+.overlay{position:fixed;inset:0;z-index:2000;background:#020b19cc;backdrop-filter:blur(9px);display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.show{display:flex}
+.modal{width:min(760px,100%);background:#091f40;border:1px solid #75b5ff30;border-radius:24px;box-shadow:0 30px 100px #0008;padding:30px;position:relative}
+.close{position:absolute;right:18px;top:15px;width:35px;height:35px;border:0;border-radius:50%;background:#ffffff0d;color:#b8cbe1;cursor:pointer;font-size:22px}
+.modal h2{font-size:30px;margin-right:35px}.modalLead{color:#9fb4cf;font-size:14px;margin:-4px 0 24px}
+.choiceGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.choice{border:1px solid #6daeff29;background:#0b284e;border-radius:17px;padding:22px;cursor:pointer;text-align:left;transition:.2s}
+.choice:hover{transform:translateY(-3px);border-color:#35a6ff99;background:#10335f}
+.choice .big{font-size:30px;margin-bottom:10px}.choice h3{font-size:16px}.choice p{font-size:12px;color:#9db2ce;margin-top:5px}
+.subview{display:none}.subview.active{display:block}
+.back{border:0;background:transparent;color:#63cfff;cursor:pointer;font-weight:700;margin-bottom:18px}
+.subGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.formCard{padding:22px;border-radius:16px;background:#0b284e;border:1px solid #6daeff29;cursor:pointer}
+.formCard h3{margin-bottom:5px}.formCard p{font-size:12px;color:#9db2ce}
+.authorityLink{display:block;color:inherit;text-decoration:none;transition:.2s}
+.authorityLink:hover{transform:translateY(-3px);border-color:#35a6ff99;background:#10335f}
+.formPanel{display:none;margin-top:18px}.formPanel.active{display:block}
+.form{display:grid;gap:12px}.form input,.form select{width:100%;padding:13px 14px;border-radius:10px;border:1px solid #7298c433;background:#061a36;color:#fff;outline:none}
+.form input:focus,.form select:focus{border-color:#2e9cff}
+.form button{padding:13px;border:0;border-radius:10px;background:linear-gradient(135deg,#1475ff,#20bdf1);color:white;font-weight:800;cursor:pointer}
+.success{display:none;margin-top:12px;padding:12px;border-radius:10px;background:#123e35;color:#7ff0c0;font-size:13px}
+.success.show{display:block}
+.toast{position:fixed;bottom:25px;right:25px;z-index:3000;background:#0e315e;border:1px solid #4baaff55;padding:13px 17px;border-radius:11px;display:none;box-shadow:var(--shadow);font-size:13px}
+.toast.show{display:block}
+@media(max-width:900px){
+ .hero{grid-template-columns:1fr;padding-top:125px}.grid{grid-template-columns:repeat(2,1fr)}
+ .workflow{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}
+ .navlinks{display:none}
+}
+@media(max-width:600px){
+ .grid,.choiceGrid,.subGrid{grid-template-columns:1fr}.hero{min-height:auto}.heroVisual{min-height:360px}
+ .workflow{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}h1{letter-spacing:-1.5px}
+}
+
+/* Authority authentication */
+.authorityChoice{position:relative;text-align:left;cursor:pointer}
+.authorityChoice .choiceAction{display:inline-block;margin-top:14px;font-weight:700;color:#35a6ff}
+.authBox{max-width:480px;position:relative}
+.authIcon{font-size:38px;margin-bottom:8px}
+.modalClose{position:absolute;right:18px;top:14px;border:0;background:transparent;color:#fff;font-size:30px;cursor:pointer}
+.authBox form{display:flex;flex-direction:column;gap:9px;text-align:left}
+.authBox input[type="email"],.authBox input[type="password"]{width:100%;box-sizing:border-box;padding:13px 14px;border-radius:10px;border:1px solid #31557d;background:#081b33;color:#fff;outline:none}
+.authBox input:focus{border-color:#35a6ff;box-shadow:0 0 0 3px #35a6ff22}
+.passwordWrap{position:relative}
+.passwordWrap input{padding-right:70px!important}
+.passwordToggle{position:absolute;right:8px;top:7px;border:0;background:#12365e;color:#8fd0ff;border-radius:7px;padding:7px 9px;cursor:pointer}
+.authRow{display:flex;justify-content:space-between;align-items:center;margin:4px 0 2px}
+.rememberLabel{display:flex!important;flex-direction:row!important;align-items:center;gap:7px!important;font-weight:400!important}
+.rememberLabel input{width:auto}
+.textButton{border:0;background:transparent;color:#68bfff;cursor:pointer;padding:0}
+.authSubmit{width:100%;margin-top:6px}
+.authError{display:none;background:#5a1d2a;border:1px solid #b84a60;color:#ffd9df;padding:10px 12px;border-radius:9px}
+.authNote{margin-top:18px;padding:12px;border-radius:10px;background:#0b2746;text-align:left;font-size:13px;color:#a9c4de}
+.authNote span{display:block;margin-top:5px}
+.authNote code{color:#fff}
+.toast{position:fixed;right:24px;bottom:24px;z-index:9999;background:#0b2948;color:#fff;border:1px solid #35a6ff66;padding:13px 17px;border-radius:10px;box-shadow:0 10px 30px #0005;display:none}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#home" class="logo">
+    <span class="logoMark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+        <path d="M4 17h16M6 17l1.5-6h9L18 17M8 11l2-4h4l2 4M8 20h2M14 20h2"/>
+      </svg>
+    </span>
+    CiviRoute
+  </a>
+  <div class="navlinks">
+    <a href="#about">About</a><a href="#features">Features</a><a href="#workflow">How It Works</a><a href="#impact">Impact</a>
+  </div>
+  <button class="navBtn" onclick="openRegister()">Get Started</button>
+</nav>
+
+<main>
+<section class="hero" id="home">
+  <div>
+    <div class="badge"><span class="dot"></span> AI-POWERED URBAN INTELLIGENCE</div>
+    <h1>Smarter Roads.<br><span class="gradient">Better Cities.</span></h1>
+    <p>CiviRoute turns data captured from moving vehicles into actionable traffic and civic intelligence — helping authorities understand road conditions, prioritize repairs, and helping citizens travel more efficiently.</p>
+    <div class="actions">
+      <button class="primary" onclick="openRegister()">Get Started →</button>
+      <a class="secondary" href="#workflow">Explore CiviRoute</a>
+    </div>
+  </div>
+  <div class="heroVisual">
+    <div class="heroImage"></div><div class="scan"></div>
+    <div class="miniMap"><b>LIVE ROUTE INTELLIGENCE</b><div class="route"></div><span>AI route analysis active</span></div>
+    <div class="aiCard">
+      <b>Vehicle-mounted AI camera</b>
+      <div class="aiRow"><span>Cars</span><strong>42</strong></div>
+      <div class="aiRow"><span>Motorcycles</span><strong>67</strong></div>
+      <div class="aiRow"><span>Buses / Trucks</span><strong>14</strong></div>
+      <div class="aiRow"><span>Traffic density</span><strong>Moderate</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="sectionHead"><span class="eyebrow">What is CiviRoute?</span><h2>One platform for traffic + civic road intelligence.</h2>
+  <p>CiviRoute is designed around vehicle-mounted cameras on moving vehicles. AI analyzes captured road imagery to detect vehicles and infrastructure conditions, attaches location information, stores observations in a backend database, and presents insights through dashboards and applications.</p></div>
+  <div class="grid">
+    <div class="card"><div class="icon">🚗</div><h3>Moving-Vehicle Vision</h3><p>Vehicle-mounted cameras continuously capture road scenes while the vehicle travels through the city.</p></div>
+    <div class="card"><div class="icon">🤖</div><h3>AI Detection</h3><p>Computer vision can identify cars, motorcycles, buses, trucks and selected road-condition issues.</p></div>
+    <div class="card"><div class="icon">📍</div><h3>Geotagged Intelligence</h3><p>Observations can be linked with location, time, image evidence and road context for traceability.</p></div>
+  </div>
+</section>
+
+<section class="section alt" id="features">
+  <div class="sectionHead"><span class="eyebrow">Core capabilities</span><h2>Built for real urban problems.</h2><p>A single dashboard can connect field observations, AI analysis, citizen reports and repair workflows.</p></div>
+  <div class="grid">
+    <div class="card"><div class="icon">🚦</div><h3>Traffic Monitoring</h3><p>Vehicle counting, traffic-density estimation, congestion indicators and route intelligence.</p></div>
+    <div class="card"><div class="icon">🕳️</div><h3>Road Damage</h3><p>Detect and document potholes, cracks and other visible road-surface problems.</p></div>
+    <div class="card"><div class="icon">🗑️</div><h3>Garbage Detection</h3><p>Flag visible garbage accumulation with supporting imagery and location context.</p></div>
+    <div class="card"><div class="icon">💧</div><h3>Waterlogging</h3><p>Identify visible waterlogging or stagnation and send evidence to the civic workflow.</p></div>
+    <div class="card"><div class="icon">🚧</div><h3>Infrastructure Issues</h3><p>Record damaged dividers, sign poles, street infrastructure and other detected issues.</p></div>
+    <div class="card"><div class="icon">📊</div><h3>Severity & Priority</h3><p>Convert observations into structured severity, prioritization and reporting views.</p></div>
+    <div class="card"><div class="icon">👥</div><h3>Citizen Reports</h3><p>Allow citizens to submit problems with photos, descriptions and location information.</p></div>
+    <div class="card"><div class="icon">📄</div><h3>AI Reports</h3><p>Generate structured reports containing issue details, evidence, timestamps and geotags.</p></div>
+    <div class="card"><div class="icon">🔧</div><h3>Repair Tracking</h3><p>Track assigned work, progress updates and proof-of-repair through a connected workflow.</p></div>
+  </div>
+</section>
+
+<section class="section" id="workflow">
+  <div class="sectionHead"><span class="eyebrow">How it works</span><h2>From road video to actionable insight.</h2></div>
+  <div class="workflow">
+    <div class="step"><span>1</span><h4>Capture</h4><p>Moving vehicle camera records road scenes.</p></div>
+    <div class="step"><span>2</span><h4>AI Vision</h4><p>Models detect vehicles and visible issues.</p></div>
+    <div class="step"><span>3</span><h4>Analyze</h4><p>Counts, density, severity and issue data are calculated.</p></div>
+    <div class="step"><span>4</span><h4>Store</h4><p>Evidence and metadata are sent to the backend.</p></div>
+    <div class="step"><span>5</span><h4>Act</h4><p>Dashboards, routes, reports and repair workflows are updated.</p></div>
+  </div>
+</section>
+
+<section class="section alt" id="impact">
+  <div class="sectionHead"><span class="eyebrow">Platform ecosystem</span><h2>Different users. One connected system.</h2><p>CiviRoute can support separate workflows for authorities, contractors and citizens while connecting their information through a common platform.</p></div>
+  <div class="stats">
+    <div class="stat"><strong>AI</strong><p>Computer-vision driven observations</p></div>
+    <div class="stat"><strong>GPS</strong><p>Location-aware evidence and mapping</p></div>
+    <div class="stat"><strong>24/7</strong><p>Designed for continuous field data collection</p></div>
+    <div class="stat"><strong>1</strong><p>Connected civic intelligence platform</p></div>
+  </div>
+</section>
+</main>
+
+<footer><span>© 2026 CiviRoute. Smart mobility & civic intelligence prototype.</span><span>Built for connected, data-driven cities.</span></footer>
+
+<!-- Registration modal -->
+<div class="overlay" id="registerModal" onclick="outsideClose(event)">
+ <div class="modal">
+  <button class="close" onclick="closeRegister()">×</button>
+
+  <div id="roleView">
+   <h2>Get started with CiviRoute</h2>
+   <p class="modalLead">Choose how you want to use the platform.</p>
+   <div class="choiceGrid">
+    <button class="choice" onclick="showAuthority()"><div class="big">🏛️</div><h3>Register as Authority</h3><p>Municipal / government authority workflows.</p></button>
+    <button class="choice" onclick="showForm('contractor')"><div class="big">🛠️</div><h3>Register as Contractor</h3><p>Receive and manage assigned civic work.</p></button>
+    <button class="choice" onclick="showForm('user')"><div class="big">👤</div><h3>Register as User</h3><p>Report issues and explore route intelligence.</p></button>
+   </div>
+  </div>
+
+  <div class="subview" id="authorityView">
+      <button class="back" onclick="backToRoles()">← Back to registration options</button>
+      <h2>Authority authentication</h2>
+      <p class="modalLead">Select the authority workspace you want to access. Authentication is required before the workspace opens.</p>
+      <div class="subGrid">
+        <button class="formCard authorityChoice" onclick="startAuthorityAuth('hub')">
+          <h3>🔐 Urban Intelligence Hub</h3>
+          <p>Authenticate and open the Urban Intelligence Hub authority workspace.</p>
+          <span class="choiceAction">Authenticate →</span>
+        </button>
+        <button class="formCard authorityChoice" onclick="startAuthorityAuth('safety')">
+          <h3>🛡️ Urban Safety Intelligence</h3>
+          <p>Authenticate and open the Urban Safety Intelligence authority workspace.</p>
+          <span class="choiceAction">Authenticate →</span>
+        </button>
+      </div>
+    </div>
+    </div>
+
+  <div class="subview" id="formView">
+   <button class="back" onclick="backFromForm()">← Back</button>
+   <h2 id="formTitle">Registration</h2>
+   <p class="modalLead" id="formLead">Enter the required details to continue.</p>
+   <form class="form" onsubmit="submitForm(event)">
+     <input id="name" required placeholder="Full name">
+     <input id="org" placeholder="Organization / City / Company">
+     <input id="email" required type="email" placeholder="Email address">
+     <input required type="tel" placeholder="Mobile number">
+     <select id="access"><option value="">Select access type</option><option>Dashboard</option><option>Field Operations</option><option>Citizen Reporting</option><option>Contract Management</option></select>
+     <button type="submit">Continue →</button>
+   </form>
+   <div class="success" id="successBox">Registration request submitted successfully. This prototype would now open the selected dashboard/workflow.</div>
+  </div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const modal=document.getElementById('registerModal');
+const roleView=document.getElementById('roleView');
+const authorityView=document.getElementById('authorityView');
+const formView=document.getElementById('formView');
+const title=document.getElementById('formTitle');
+const lead=document.getElementById('formLead');
+
+function openRegister(){ modal.classList.add('show'); resetViews(); }
+function closeRegister(){ modal.classList.remove('show'); }
+function outsideClose(e){ if(e.target===modal) closeRegister(); }
+function resetViews(){ roleView.style.display='block'; authorityView.classList.remove('active'); formView.classList.remove('active'); document.getElementById('successBox').classList.remove('show'); }
+function showAuthority(){ roleView.style.display='none'; authorityView.classList.add('active'); }
+function backToRoles(){ resetViews(); }
+function showForm(type){
+ roleView.style.display='none'; authorityView.classList.remove('active'); formView.classList.add('active');
+ const data={
+  contractor:['Contractor Registration','Register your company/team to receive and manage assigned civic work.'],
+  user:['User Registration','Create a citizen account for reports, maps and route intelligence.'],
+  'authority-login':['Authority Login','Continue to the authority-side CiviRoute workspace.'],
+  'authority-new':['New Authority Registration','Create an authority organization profile for CiviRoute.']
+ };
+ [title.textContent,lead.textContent]=data[type]||['Registration','Enter your details to continue.'];
+ document.getElementById('access').value='';
+}
+function backFromForm(){
+ if(title.textContent==='Authority Login'||title.textContent==='New Authority Registration'){
+   authorityView.classList.add('active'); formView.classList.remove('active');
+ }else{resetViews();}
+}
+function submitForm(e){
+ e.preventDefault();
+ const name=document.getElementById('name').value.trim();
+ document.getElementById('successBox').classList.add('show');
+ document.getElementById('successBox').textContent='Welcome, '+name+'! Prototype action completed — the corresponding CiviRoute workspace would open here.';
+ showToast('CiviRoute registration action completed ✓');
+}
+function showToast(msg){
+ const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+ setTimeout(()=>t.classList.remove('show'),2800);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRegister()});
+
+/* CiviRoute authority authentication flow */
+const AUTH_DESTINATIONS = {
+  hub: "https://urban-intel-hub-3.preview.emergentagent.com/",
+  safety: "https://urban-safety-intel.preview.emergentagent.com/"
+};
+
+let selectedAuthorityDestination = null;
+
+function startAuthorityAuth(destination) {
+  selectedAuthorityDestination = destination;
+  const label = destination === "hub"
+    ? "Urban Intelligence Hub"
+    : "Urban Safety Intelligence";
+
+  const modal = document.getElementById("authorityAuthModal");
+  const destinationText = document.getElementById("authDestinationText");
+  const error = document.getElementById("authError");
+
+  if (destinationText) destinationText.textContent =
+    "Authenticate to securely open " + label + ".";
+  if (error) {
+    error.style.display = "none";
+    error.textContent = "";
+  }
+
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden", "false");
+  setTimeout(() => document.getElementById("authorityEmail").focus(), 50);
+}
+
+function closeAuthorityAuth() {
+  const modal = document.getElementById("authorityAuthModal");
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden", "true");
+  document.getElementById("authorityAuthForm").reset();
+  document.getElementById("authorityPassword").type = "password";
+  document.querySelector(".passwordToggle").textContent = "Show";
+}
+
+function togglePassword() {
+  const input = document.getElementById("authorityPassword");
+  const button = document.querySelector(".passwordToggle");
+  const visible = input.type === "text";
+  input.type = visible ? "password" : "text";
+  button.textContent = visible ? "Show" : "Hide";
+}
+
+function showDemoCredentials() {
+  document.getElementById("authorityEmail").value = "authority@civiroute.demo";
+  document.getElementById("authorityPassword").value = "civiroute123";
+  document.getElementById("authError").style.display = "none";
+}
+
+function handleAuthorityLogin(event) {
+  event.preventDefault();
+
+  const email = document.getElementById("authorityEmail").value.trim().toLowerCase();
+  const password = document.getElementById("authorityPassword").value;
+  const remember = document.getElementById("rememberAuthority").checked;
+  const error = document.getElementById("authError");
+
+  // Demo credentials for the standalone prototype.
+  const validEmail = "authority@civiroute.demo";
+  const validPassword = "civiroute123";
+
+  if (email !== validEmail || password !== validPassword) {
+    error.textContent = "Authentication failed. Check your official email and password.";
+    error.style.display = "block";
+    return;
+  }
+
+  const session = {
+    authenticated: true,
+    email: email,
+    destination: selectedAuthorityDestination,
+    authenticatedAt: new Date().toISOString()
+  };
+
+  const storage = remember ? localStorage : sessionStorage;
+  storage.setItem("civirouteAuthoritySession", JSON.stringify(session));
+
+  const destination = AUTH_DESTINATIONS[selectedAuthorityDestination];
+  const toast = document.getElementById("authToast");
+  toast.textContent = "Authentication successful. Opening authority workspace…";
+  toast.style.display = "block";
+
+  // Open only after successful authentication.
+  setTimeout(() => {
+    window.open(destination, "_blank", "noopener,noreferrer");
+    closeAuthorityAuth();
+    setTimeout(() => { toast.style.display = "none"; }, 1200);
+  }, 350);
+}
+
+function authorityIsAuthenticated() {
+  return !!(localStorage.getItem("civirouteAuthoritySession") ||
+             sessionStorage.getItem("civirouteAuthoritySession"));
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") {
+    const modal = document.getElementById("authorityAuthModal");
+    if (modal && modal.classList.contains("show")) closeAuthorityAuth();
+  }
+});
+
+</script>
+
+  <!-- Authority Authentication Modal -->
+  <div class="modal" id="authorityAuthModal" aria-hidden="true">
+    <div class="modalBox authBox">
+      <button class="modalClose" onclick="closeAuthorityAuth()" aria-label="Close">×</button>
+      <div class="authIcon">🔐</div>
+      <h2>Authority Authentication</h2>
+      <p class="modalLead" id="authDestinationText">Authenticate to continue.</p>
+
+      <form id="authorityAuthForm" onsubmit="handleAuthorityLogin(event)">
+        <label for="authorityEmail">Official Email</label>
+        <input id="authorityEmail" type="email" autocomplete="username" placeholder="authority@city.gov" required>
+
+        <label for="authorityPassword">Password</label>
+        <div class="passwordWrap">
+          <input id="authorityPassword" type="password" autocomplete="current-password" placeholder="Enter password" required minlength="4">
+          <button type="button" class="passwordToggle" onclick="togglePassword()" aria-label="Show password">Show</button>
+        </div>
+
+        <div class="authRow">
+          <label class="rememberLabel"><input id="rememberAuthority" type="checkbox"> Remember me</label>
+          <button type="button" class="textButton" onclick="showDemoCredentials()">Demo credentials</button>
+        </div>
+
+        <div id="authError" class="authError" role="alert"></div>
+        <button class="primary authSubmit" type="submit">Authenticate & Continue →</button>
+      </form>
+
+      <div class="authNote">
+        <strong>Demo authentication</strong>
+        <span>Use <code>authority@civiroute.demo</code> / <code>civiroute123</code></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="authToast"></div>
+
+</body>
+</html>
